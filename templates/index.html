@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Basic Calculator</title>
+</head>
+<body>
+    <script>
+        var socket = new WebSocket("ws://localhost:8888/ws_calculator");
+
+        socket.onopen = function(event) {
+            console.log("WebSocket opened");
+        };
+
+        socket.onmessage = function(event) {
+            var data = JSON.parse(event.data);
+            if (data.error) {
+                document.getElementById("result").innerText = "Error: " + data.error;
+            } else {
+                document.getElementById("result").innerText = "Result: " + data.result;
+            }
+        };
+
+        function calculate() {
+            var form = document.getElementById("calculatorForm");
+            var data = {
+                "operation": form.operation.value,
+                "num1": parseFloat(form.num1.value),
+                "num2": parseFloat(form.num2.value)
+            };
+
+            socket.send(JSON.stringify(data));
+        }
+    </script>
+    <h1>Basic Calculator</h1>
+    <form id="calculatorForm" method="post">
+        <input type="radio" name="operation" value="add" {% if operation == "add" %}checked{% end %}> Add
+        <input type="radio" name="operation" value="multiply" {% if operation == "multiply" %}checked{% end %}> Multiply
+        <input type="radio" name="operation" value="divide" {% if operation == "divide" %}checked{% end %}> Divide
+        <input type="radio" name="operation" value="subtract" {% if operation == "subtract" %}checked{% end %}> Subtract
+        <br>
+        Number 1: <input type="number" name="num1" required>
+        Number 2: <input type="number" name="num2" required>
+        <input type="submit" value="Calculate">
+    </form>
+    <div id="result">Result: {{ result }}</div>
+</body>
+</html>

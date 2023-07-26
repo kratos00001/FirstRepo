@@ -1,6 +1,7 @@
 import json
 import tornado.ioloop
 import tornado.web
+import tornado.websocket
 
 class HelloWorldHandler(tornado.web.RequestHandler):
     def get(self):
@@ -43,14 +44,42 @@ class CalculatorHandler(tornado.web.RequestHandler):
             return 
         print("Result :", result)
         self.render("index.html", result=result, num1=num1, num2=num2, operation=operation)
-        
+
+class WebSocketCalculatorHandler(tornado.websocket.WebSocketHandler):
+    def open(self):
+        print("WebSocket opened")
+
+    def on_message(self, message):
+        data = json.loads(message)
+        operation = data.get("operation")
+        num1 = float(data.get("num1"))
+        num2 = float(data.get("num2"))
+
+        if operation == "add":
+            result = num1 + num2
+        elif operation == "multiply":
+            result = num1 * num2
+        elif operation == "divide":
+            result = num1 / num2
+        elif operation == "subtract":
+            result = num1 - num2
+        else:
+            self.write_message(json.dumps({"error": "Invalid operation."}))
+            return
+
+        self.write_message(json.dumps({"result": result}))
+
+    def on_close(self):
+        print("WebSocket closed")
+       
 
 
 def make_app():
     return tornado.web.Application([
         (r"/", HelloWorldHandler),
         (r"/sum", SumHandler),
-        (r"/calculator", CalculatorHandler)
+        (r"/calculator", CalculatorHandler),
+        (r"/ws_calculator", WebSocketCalculatorHandler)
     ], template_path="./templates")
 
 if __name__ == "__main__":

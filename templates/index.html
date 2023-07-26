@@ -2,6 +2,24 @@
 <html>
 <head>
     <title>Basic Calculator</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        /* Custom styling for the page */
+        body {
+            background-color: rgb(83, 78, 78);
+            color: white;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .result {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <script>
@@ -31,17 +49,33 @@
             socket.send(JSON.stringify(data));
         }
     </script>
-    <h1>Basic Calculator</h1>
-    <form id="calculatorForm" method="post">
-        <input type="radio" name="operation" value="add" {% if operation == "add" %}checked{% end %}> Add
-        <input type="radio" name="operation" value="multiply" {% if operation == "multiply" %}checked{% end %}> Multiply
-        <input type="radio" name="operation" value="divide" {% if operation == "divide" %}checked{% end %}> Divide
-        <input type="radio" name="operation" value="subtract" {% if operation == "subtract" %}checked{% end %}> Subtract
+    <div class="container">
+        <h1>Basic Calculator</h1>
+        <form id="calculatorForm" method="post">
+            <div class="flex-nowrap">
+                <br>
+                Number 1:<input type="number" class="form-control" name="num1" required placeholder="{{num1}}">
+                <br>
+                Number 2:<input type="number" class="form-control" name="num2" required placeholder="{{num2}}">
+                <br>
+            </div>
+            <div class="justify-content-center">
+                <input type="radio" class="btn-check" name="operation" value="add" id="Add" {% if operation == "add" %}checked{% end %}> 
+                <label class="btn btn-secondary" for="Add">Add</label>
+                <input type="radio" class="btn-check" name="operation" value="multiply" id="Multiply" {% if operation == "multiply" %}checked{% end %}> 
+                <label class="btn btn-secondary" for="Multiply">Multiply</label>
+                <input type="radio" class="btn-check" name="operation" value="divide" id="Divide" {% if operation == "divide" %}checked{% end %}>
+                <label class="btn btn-secondary" for="Divide">Divide</label>
+                <input type="radio" class="btn-check" name="operation" value="subtract" id="Substract" {% if operation == "subtract" %}checked{% end %}>
+                <label class="btn btn-secondary" for="Substract">Substract</label>
+            </div>
+            <br>
+            <div class="d-flex justify-content-center">
+                <input type="submit" class="btn btn-default" value="Calculate">
+            </div>
+        </form>
         <br>
-        Number 1: <input type="number" name="num1" required>
-        Number 2: <input type="number" name="num2" required>
-        <input type="submit" value="Calculate">
-    </form>
-    <div id="result">Result: {{ result }}</div>
+        <div id="result">Result: {{ result }}</div>
+    </div>
 </body>
 </html>
